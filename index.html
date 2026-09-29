@@ -7,119 +7,167 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+    .custom-checkbox {
+      accent-color: #059669;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-4 sm:p-6 lg:p-8">
+<body class="bg-slate-50 text-slate-800 min-h-screen p-3 sm:p-6 lg:p-8">
 
   <div class="max-w-4xl mx-auto space-y-6">
 
-    <!-- Header Section -->
-    <header class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-2xl shadow-sm">
+    <!-- Header Section with Version & Update Date -->
+    <header class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-2xl shadow-sm shrink-0">
           🏸
         </div>
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold text-slate-900">羽球雙打對戰排程器</h1>
-          <p class="text-sm text-slate-500">獨立成員格子填寫・均衡輪替・避免連續出賽</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">羽球雙打對戰排程器</h1>
+            <!-- Version & Update Date Badges -->
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                v1.2.0
+              </span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                更新：2026-09-30
+              </span>
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">獨立球員空格・公平輪替防連打・即時完賽進度看板</p>
         </div>
       </div>
-      <div class="flex items-center gap-2">
-        <button onclick="fillDemoData()" class="px-3 py-1.5 text-xs sm:text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-200">
-          填入範例名單
+
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+        <button type="button" onclick="fillDemoData()" class="flex-1 sm:flex-initial px-3 py-2 text-xs sm:text-sm font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors border border-emerald-200">
+          ⚡ 填入範例名單
         </button>
-        <button onclick="clearAllInputs()" class="px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200">
-          清空所有
+        <button type="button" onclick="clearAllInputs()" class="flex-1 sm:flex-initial px-3 py-2 text-xs sm:text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors border border-slate-200">
+          🗑️ 清空所有
         </button>
       </div>
     </header>
 
-    <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <!-- Input Groups Card -->
+    <section class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-100 gap-2">
         <div>
-          <h2 class="text-lg font-bold text-slate-800">參賽小組清單</h2>
-          <p class="text-xs text-slate-500">每組各填入兩位球員姓名（預設 5 組，可自行增減）</p>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span>👥 參賽小組名單</span>
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">每組分別填入「隊員 A」與「隊員 B」，預設 5 組，可點擊按鈕自由增減（最少 2 組）</p>
         </div>
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full" id="teamCountBadge">
+        <div class="flex items-center gap-2 self-start sm:self-center">
+          <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full" id="teamCountBadge">
             共 5 組
           </span>
         </div>
       </div>
 
       <!-- Teams Container Grid -->
-      <div id="teamsContainer" class="space-y-3">
-        <!-- Rendered dynamically by JavaScript -->
+      <div id="teamsContainer" class="space-y-2.5">
+        <!-- Injected via JavaScript -->
       </div>
 
-      <!-- Action Buttons Row -->
-      <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-4 border-t border-slate-100">
-        <button onclick="addTeamRow()" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 font-semibold text-sm transition-all">
+      <!-- Actions & Controls -->
+      <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-5 border-t border-slate-100">
+        <button type="button" onclick="addTeamRow()" class="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-dashed border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 font-semibold text-sm transition-all">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
           新增一組隊伍
         </button>
 
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200">
-            <label for="cyclesInput" class="text-xs sm:text-sm font-medium text-slate-600">循環輪數：</label>
-            <input type="number" id="cyclesInput" min="1" max="5" value="1" class="w-14 text-center py-1 px-2 border border-slate-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <div class="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm">
+            <label for="cyclesInput" class="font-medium text-slate-600">循環輪數：</label>
+            <input type="number" id="cyclesInput" min="1" max="10" value="1" class="w-12 text-center py-1 border border-slate-300 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
           </div>
-          <button onclick="generateSchedule()" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold text-sm shadow-md transition-all">
-            自動排列對戰順序
+          <button type="button" onclick="generateSchedule()" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2">
+            <span>🚀</span> 自動生成公平對戰表
           </button>
         </div>
       </div>
 
-      <!-- Error Message Notice Box -->
-      <div id="errorBox" class="hidden mt-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
-        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"></path></svg>
+      <!-- Validation Notification Toast / Alert -->
+      <div id="errorBox" class="hidden mt-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm rounded-xl flex items-center gap-2">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"></path></svg>
         <span id="errorMessage"></span>
       </div>
     </section>
 
+    <!-- Output Results Section -->
     <section id="resultsSection" class="hidden space-y-6">
-      
-      <!-- Match Schedule Card -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+
+      <!-- Schedule Progress & Match List Card -->
+      <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-100 gap-3">
           <div>
-            <h2 class="text-lg font-bold text-slate-800">對戰場次順序表</h2>
-            <p class="text-xs text-slate-500">已套用輪替優先與連打防護，點擊場次可標記為已完賽</p>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+              <span>📋 對戰場次順序表</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">點擊各場次右側勾選框或卡片本體，即可確認完賽進度</p>
           </div>
-          <span id="totalMatchesBadge" class="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full">
-            共 0 場
-          </span>
+          
+          <div class="flex items-center gap-2 self-start sm:self-center">
+            <button type="button" onclick="copyScheduleText()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200" title="複製賽程以便分享至通訊軟體">
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+              一鍵複製賽程 (LINE)
+            </button>
+            <span id="totalMatchesBadge" class="text-xs font-bold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full">
+              共 0 場
+            </span>
+          </div>
         </div>
 
+        <!-- Real-Time Progress Bar -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-5">
+          <div class="flex items-center justify-between text-xs font-bold mb-2 text-slate-700">
+            <span class="flex items-center gap-1">
+              <span>賽程完成進度</span>
+              <span id="progressSummaryText" class="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full text-[11px]">0 / 0 場</span>
+            </span>
+            <span id="progressPercentText" class="text-emerald-600 font-extrabold text-sm">0%</span>
+          </div>
+          <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+            <div id="progressBarFill" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Match Cards List -->
         <div id="matchList" class="space-y-3">
-          <!-- Dynamic Match Rows -->
+          <!-- Dynamically populated -->
         </div>
       </div>
 
-      <!-- Rotation Stats Section -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <!-- Real-Time Rotation Statistics Table Card -->
+      <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
         <div class="pb-3 mb-3 border-b border-slate-100">
-          <h2 class="text-lg font-bold text-slate-800">各組出賽次數統計看板</h2>
-          <p class="text-xs text-slate-500">檢視各組累計出戰次數是否完全均等</p>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span>📊 各組出賽次數統計看板</span>
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">即時統計各組的總場次、已完賽場次及剩餘待打場次</p>
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead class="text-xs uppercase bg-slate-50 text-slate-500 border-b border-slate-200">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="text-[11px] uppercase bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
               <tr>
-                <th class="py-3 px-4">隊伍組別</th>
-                <th class="py-3 px-4">成員名單</th>
-                <th class="py-3 px-4 text-center">總出賽場次</th>
-                <th class="py-3 px-4 text-center">均等狀態</th>
+                <th class="py-3 px-3 sm:px-4">小組名稱</th>
+                <th class="py-3 px-3 sm:px-4">成員名單</th>
+                <th class="py-3 px-2 sm:px-3 text-center">總出賽</th>
+                <th class="py-3 px-2 sm:px-3 text-center text-emerald-700">已完賽</th>
+                <th class="py-3 px-2 sm:px-3 text-center text-amber-700">剩餘場次</th>
+                <th class="py-3 px-2 sm:px-3 text-center">均等狀態</th>
               </tr>
             </thead>
             <tbody id="statsTableBody" class="divide-y divide-slate-100">
-              <!-- Dynamic Stats Rows -->
+              <!-- Dynamically populated -->
             </tbody>
           </table>
         </div>
@@ -127,109 +175,111 @@
 
     </section>
 
+    <!-- Copy Feedback Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2">
+      <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span id="toastMessage">已成功複製到剪貼簿！</span>
+    </div>
+
   </div>
 
   <script>
-    // State management
     let teamCounter = 0;
     let teams = [];
+    let currentSchedule = [];
+    let currentTeamsList = [];
 
-    // Predefined colors for team badges
-    const teamColors = [
-      { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-300' },
-      { bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-300' },
-      { bg: 'bg-amber-100', text: 'text-amber-800', border: 'border-amber-300' },
-      { bg: 'bg-purple-100', text: 'text-purple-800', border: 'border-purple-300' },
-      { bg: 'bg-rose-100', text: 'text-rose-800', border: 'border-rose-300' },
-      { bg: 'bg-cyan-100', text: 'text-cyan-800', border: 'border-cyan-300' },
-      { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-300' },
-      { bg: 'bg-indigo-100', text: 'text-indigo-800', border: 'border-indigo-300' },
+    const badgeThemes = [
+      { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200' },
+      { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+      { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+      { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
+      { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
+      { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' },
+      { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200' },
+      { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' }
     ];
 
-    // Demo Preset Data
-    const demoPresets = [
+    const demoData = [
       { name: '第 1 組', p1: '小明', p2: '小華' },
-      { name: '第 2 組', p1: '大豪', p2: '阿強' },
+      { name: '第 2 組', p1: '阿強', p2: '大豪' },
       { name: '第 3 組', p1: '志明', p2: '春嬌' },
       { name: '第 4 組', p1: '冠宇', p2: '阿倫' },
       { name: '第 5 組', p1: '家豪', p2: '柏翰' }
     ];
 
-    function initDefaultTeams() {
+    function initTeams() {
       const container = document.getElementById('teamsContainer');
       container.innerHTML = '';
       teams = [];
       teamCounter = 0;
-
       for (let i = 0; i < 5; i++) {
         addTeamRow();
       }
     }
 
-    function addTeamRow(defaultName = '', defaultP1 = '', defaultP2 = '') {
+    function addTeamRow(name = '', p1Val = '', p2Val = '') {
       teamCounter++;
-      const teamId = 'team_' + teamCounter;
-      const indexNum = teams.length + 1;
-      const teamLabel = defaultName || `第 ${indexNum} 組`;
+      const teamId = 'team_row_' + teamCounter;
+      const index = teams.length + 1;
+      const label = name || `第 ${index} 組`;
 
-      const teamObj = {
-        id: teamId,
-        defaultLabel: teamLabel
-      };
-      teams.push(teamObj);
-
-      const colorScheme = teamColors[(teams.length - 1) % teamColors.length];
+      teams.push({ id: teamId, defaultLabel: label });
+      const theme = badgeThemes[(teams.length - 1) % badgeThemes.length];
 
       const row = document.createElement('div');
       row.id = teamId;
-      row.className = 'flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl transition-all hover:bg-slate-100/70';
+      row.className = 'group flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-2.5 sm:p-3 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-300 transition-all';
       row.innerHTML = `
         <div class="flex items-center justify-between sm:w-28 shrink-0">
-          <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold ${colorScheme.bg} ${colorScheme.text} border ${colorScheme.border}">
-            ${teamLabel}
+          <span class="team-label-tag inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold ${theme.bg} ${theme.text} border ${theme.border}">
+            ${label}
           </span>
-          <button type="button" onclick="removeTeamRow('${teamId}')" class="sm:hidden text-slate-400 hover:text-rose-500 p-1" title="刪除此組">
+          <button type="button" onclick="removeTeamRow('${teamId}')" class="sm:hidden text-slate-400 hover:text-rose-500 p-1" title="刪除本組">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
 
         <div class="grid grid-cols-2 gap-2 flex-1">
-          <div class="relative">
-            <input type="text" data-type="p1" placeholder="成員 A" value="${defaultP1}" 
-              class="w-full text-sm bg-white border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all placeholder:text-slate-400">
-          </div>
-          <div class="relative">
-            <input type="text" data-type="p2" placeholder="成員 B" value="${defaultP2}" 
-              class="w-full text-sm bg-white border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all placeholder:text-slate-400">
-          </div>
+          <input type="text" data-member="p1" placeholder="隊員 A" value="${p1Val}"
+            class="w-full text-xs sm:text-sm bg-white border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all placeholder:text-slate-400">
+          <input type="text" data-member="p2" placeholder="隊員 B" value="${p2Val}"
+            class="w-full text-xs sm:text-sm bg-white border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all placeholder:text-slate-400">
         </div>
 
-        <button type="button" onclick="removeTeamRow('${teamId}')" class="hidden sm:flex text-slate-400 hover:text-rose-600 p-2 rounded-lg hover:bg-rose-50 transition-colors" title="刪除此組">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        <button type="button" onclick="removeTeamRow('${teamId}')" class="hidden sm:flex text-slate-400 hover:text-rose-600 p-2 rounded-lg hover:bg-rose-50 transition-colors shrink-0" title="刪除本組">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
         </button>
       `;
 
       document.getElementById('teamsContainer').appendChild(row);
-      updateTeamBadge();
+      refreshTeamIndices();
     }
 
     function removeTeamRow(id) {
       if (teams.length <= 2) {
-        showError('雙打比賽至少需要保留 2 組隊伍！');
+        displayError('雙打比賽至少需要 2 組隊伍！');
         return;
       }
       clearError();
       const el = document.getElementById(id);
       if (el) el.remove();
       teams = teams.filter(t => t.id !== id);
-      updateTeamBadge();
+      refreshTeamIndices();
     }
 
-    function updateTeamBadge() {
-      const badge = document.getElementById('teamCountBadge');
-      if (badge) {
-        badge.innerText = `共 ${teams.length} 組`;
-      }
+    function refreshTeamIndices() {
+      const rows = document.querySelectorAll('#teamsContainer > div');
+      rows.forEach((row, i) => {
+        const tag = row.querySelector('.team-label-tag');
+        if (tag) {
+          tag.innerText = `第 ${i + 1} 組`;
+        }
+        if (teams[i]) {
+          teams[i].defaultLabel = `第 ${i + 1} 組`;
+        }
+      });
+      document.getElementById('teamCountBadge').innerText = `共 ${teams.length} 組`;
     }
 
     function fillDemoData() {
@@ -238,24 +288,21 @@
       container.innerHTML = '';
       teams = [];
       teamCounter = 0;
-
-      demoPresets.forEach(demo => {
-        addTeamRow(demo.name, demo.p1, demo.p2);
+      demoData.forEach(d => {
+        addTeamRow(d.name, d.p1, d.p2);
       });
     }
 
     function clearAllInputs() {
       clearError();
-      document.querySelectorAll('#teamsContainer input').forEach(input => {
-        input.value = '';
-      });
+      document.querySelectorAll('#teamsContainer input').forEach(input => input.value = '');
       document.getElementById('resultsSection').classList.add('hidden');
+      currentSchedule = [];
     }
 
-    function showError(msg) {
+    function displayError(msg) {
       const box = document.getElementById('errorBox');
-      const text = document.getElementById('errorMessage');
-      text.innerText = msg;
+      document.getElementById('errorMessage').innerText = msg;
       box.classList.remove('hidden');
     }
 
@@ -266,22 +313,22 @@
     function generateSchedule() {
       clearError();
 
-      // Gather and validate input
       const teamList = [];
-      for (let i = 0; i < teams.length; i++) {
-        const row = document.getElementById(teams[i].id);
-        if (!row) continue;
-        const p1 = row.querySelector('[data-type="p1"]').value.trim();
-        const p2 = row.querySelector('[data-type="p2"]').value.trim();
-        const label = teams[i].defaultLabel;
+      const rows = document.querySelectorAll('#teamsContainer > div');
+      
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const p1 = row.querySelector('[data-member="p1"]').value.trim();
+        const p2 = row.querySelector('[data-member="p2"]').value.trim();
+        const label = row.querySelector('.team-label-tag').innerText;
 
         if (!p1 || !p2) {
-          showError(`請將「${label}」的成員 A 與成員 B 填寫完整！`);
+          displayError(`請將「${label}」的隊員 A 與隊員 B 填寫完整！`);
           return;
         }
 
         teamList.push({
-          id: teams[i].id,
+          id: 'team_idx_' + (i + 1),
           label: label,
           p1: p1,
           p2: p2,
@@ -290,43 +337,43 @@
       }
 
       if (teamList.length < 2) {
-        showError('請至少填寫 2 組隊伍名單');
+        displayError('至少需要 2 組隊伍才能安排對戰！');
         return;
       }
 
       const cycles = Math.max(1, parseInt(document.getElementById('cyclesInput').value, 10) || 1);
 
-      // 1. Generate all unique pairings
-      const basePairings = [];
+      // Generate all combination pairings (N choose 2)
+      const basePairs = [];
       for (let i = 0; i < teamList.length; i++) {
         for (let j = i + 1; j < teamList.length; j++) {
-          basePairings.push({
+          basePairs.push({
             t1: teamList[i],
             t2: teamList[j]
           });
         }
       }
 
-      // 2. Clone for cycles
+      // Multiply by cycles
       let pool = [];
       for (let c = 0; c < cycles; c++) {
-        pool.push(...basePairings.map(pair => ({ ...pair })));
+        pool.push(...basePairs.map(p => ({ ...p })));
       }
 
-      // 3. Scheduling with fairness and back-to-back penalty
+      // Greedy Fair Scheduling with Back-to-Back penalty
       const scheduled = [];
       const playCounts = {};
       const lastPlayedRound = {};
       teamList.forEach(t => {
         playCounts[t.id] = 0;
-        lastPlayedRound[t.id] = -100;
+        lastPlayedRound[t.id] = -999;
       });
 
       let currentRound = 0;
-      let lastMatchTeams = new Set();
+      let lastMatchTeamIds = new Set();
 
       while (pool.length > 0) {
-        let bestCandidateIdx = -1;
+        let bestIndex = -1;
         let lowestCost = Infinity;
 
         for (let i = 0; i < pool.length; i++) {
@@ -334,112 +381,217 @@
           const id1 = match.t1.id;
           const id2 = match.t2.id;
 
-          // Base factor: cumulative plays
+          // 1. Total play count weight
           let cost = (playCounts[id1] + playCounts[id2]) * 20;
 
-          // Balance variance penalty
+          // 2. Imbalance difference penalty
           cost += Math.abs(playCounts[id1] - playCounts[id2]) * 10;
 
-          // Severe back-to-back penalty: if played in immediate previous round
-          if (lastMatchTeams.has(id1)) cost += 150;
-          if (lastMatchTeams.has(id2)) cost += 150;
+          // 3. Strict back-to-back penalty if played in immediate previous round
+          if (lastMatchTeamIds.has(id1)) cost += 200;
+          if (lastMatchTeamIds.has(id2)) cost += 200;
 
-          // Bonus for teams that rested longer
+          // 4. Prefer teams that have rested longer
           const rest1 = currentRound - lastPlayedRound[id1];
           const rest2 = currentRound - lastPlayedRound[id2];
           cost -= (rest1 + rest2) * 2;
 
           if (cost < lowestCost) {
             lowestCost = cost;
-            bestCandidateIdx = i;
+            bestIndex = i;
           }
         }
 
-        const picked = pool.splice(bestCandidateIdx, 1)[0];
+        const picked = pool.splice(bestIndex, 1)[0];
+        picked.completed = false; // completion checkbox state
+        picked.matchNumber = currentRound + 1;
         scheduled.push(picked);
 
         playCounts[picked.t1.id]++;
         playCounts[picked.t2.id]++;
         lastPlayedRound[picked.t1.id] = currentRound;
         lastPlayedRound[picked.t2.id] = currentRound;
-        lastMatchTeams = new Set([picked.t1.id, picked.t2.id]);
+        lastMatchTeamIds = new Set([picked.t1.id, picked.t2.id]);
         currentRound++;
       }
 
-      // Render Results
-      renderScheduleResults(scheduled, teamList, playCounts);
+      currentSchedule = scheduled;
+      currentTeamsList = teamList;
+
+      renderScheduleView();
+      document.getElementById('resultsSection').classList.remove('hidden');
+      document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function renderScheduleResults(matches, allTeams, playCounts) {
-      const resultsSection = document.getElementById('resultsSection');
-      const matchList = document.getElementById('matchList');
-      const statsTableBody = document.getElementById('statsTableBody');
+    function renderScheduleView() {
+      const container = document.getElementById('matchList');
       const totalBadge = document.getElementById('totalMatchesBadge');
+      totalBadge.innerText = `共 ${currentSchedule.length} 場對戰`;
+      container.innerHTML = '';
 
-      totalBadge.innerText = `共 ${matches.length} 場對戰`;
-      matchList.innerHTML = '';
-
-      matches.forEach((m, idx) => {
-        // Find resting teams for this match
+      currentSchedule.forEach((m, idx) => {
         const activeIds = new Set([m.t1.id, m.t2.id]);
-        const restingTeams = allTeams.filter(t => !activeIds.has(t.id));
-
-        const card = document.createElement('div');
-        card.className = 'match-card border border-slate-200 rounded-xl p-4 bg-white hover:border-emerald-300 transition-all cursor-pointer select-none';
-        card.onclick = () => toggleMatchCompleted(card);
+        const restingTeams = currentTeamsList.filter(t => !activeIds.has(t.id));
 
         const restingBadges = restingTeams.length > 0
-          ? restingTeams.map(t => `<span class="inline-block text-[11px] px-2 py-0.5 bg-slate-100 text-slate-500 rounded border border-slate-200">${escapeHtml(t.label)}</span>`).join(' ')
+          ? restingTeams.map(t => `<span class="inline-block text-[11px] px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded border border-slate-200">${escapeHtml(t.label)}</span>`).join(' ')
           : '<span class="text-xs text-slate-400">無</span>';
 
+        const card = document.createElement('div');
+        card.id = `match-card-${idx}`;
+        card.className = `match-card border border-slate-200 rounded-xl p-3.5 sm:p-4 bg-white transition-all select-none hover:border-slate-300 ${m.completed ? 'bg-slate-50/80 border-slate-200 opacity-60' : ''}`;
+        
         card.innerHTML = `
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <span class="w-16 shrink-0 text-center py-1 px-2 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-lg">
+          <div class="flex items-center justify-between gap-3">
+            
+            <div class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer" onclick="toggleMatchByIndex(${idx})">
+              <span class="w-14 shrink-0 text-center py-1 px-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-lg ${m.completed ? 'line-through text-slate-400 bg-slate-100 border-slate-200' : ''}">
                 第 ${idx + 1} 場
               </span>
-              <div class="text-sm font-semibold flex flex-wrap items-center gap-2">
-                <span class="text-slate-900">${escapeHtml(m.t1.display)}</span>
-                <span class="px-2 py-0.5 rounded text-xs font-black bg-rose-100 text-rose-600">VS</span>
-                <span class="text-slate-900">${escapeHtml(m.t2.display)}</span>
+
+              <div class="min-w-0 flex-1">
+                <div class="text-xs sm:text-sm font-semibold flex flex-wrap items-center gap-1.5 ${m.completed ? 'line-through text-slate-400' : 'text-slate-900'}">
+                  <span class="truncate">${escapeHtml(m.t1.display)}</span>
+                  <span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-50 text-rose-600 border border-rose-200 shrink-0">VS</span>
+                  <span class="truncate">${escapeHtml(m.t2.display)}</span>
+                </div>
+                <div class="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1">
+                  <span class="text-slate-400">輪空休息：</span>
+                  <div class="flex items-center gap-1 flex-wrap">${restingBadges}</div>
+                </div>
               </div>
             </div>
-            <div class="flex items-center gap-2 text-xs text-slate-500 self-end sm:self-center shrink-0">
-              <span class="text-slate-400">輪空休息：</span>
-              <div class="flex items-center gap-1 flex-wrap">${restingBadges}</div>
+
+            <!-- Checkbox Action -->
+            <div class="flex items-center pl-2 shrink-0">
+              <label class="flex items-center gap-2 cursor-pointer bg-slate-50 hover:bg-slate-100 p-2 rounded-xl border border-slate-200 transition-colors">
+                <input type="checkbox" class="custom-checkbox w-4 h-4 cursor-pointer" 
+                  ${m.completed ? 'checked' : ''} 
+                  onchange="onCheckboxChange(${idx}, this.checked)">
+                <span class="text-xs font-semibold ${m.completed ? 'text-emerald-700 font-bold' : 'text-slate-600'} hidden sm:inline">
+                  ${m.completed ? '已完賽' : '確認完賽'}
+                </span>
+              </label>
             </div>
+
           </div>
         `;
-        matchList.appendChild(card);
+
+        container.appendChild(card);
       });
 
-      // Render Fair Statistics Table
-      statsTableBody.innerHTML = '';
-      allTeams.forEach(team => {
-        const count = playCounts[team.id];
+      updateProgressAndStats();
+    }
+
+    function onCheckboxChange(index, isChecked) {
+      if (!currentSchedule[index]) return;
+      currentSchedule[index].completed = isChecked;
+      renderScheduleView();
+    }
+
+    function toggleMatchByIndex(index) {
+      if (!currentSchedule[index]) return;
+      currentSchedule[index].completed = !currentSchedule[index].completed;
+      renderScheduleView();
+    }
+
+    function updateProgressAndStats() {
+      const total = currentSchedule.length;
+      const completedCount = currentSchedule.filter(m => m.completed).length;
+      const percent = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+
+      // Update progress bar
+      document.getElementById('progressSummaryText').innerText = `${completedCount} / ${total} 場`;
+      document.getElementById('progressPercentText').innerText = `${percent}%`;
+      document.getElementById('progressBarFill').style.width = `${percent}%`;
+
+      // Recalculate team statistics
+      const totalPlays = {};
+      const donePlays = {};
+      currentTeamsList.forEach(t => {
+        totalPlays[t.id] = 0;
+        donePlays[t.id] = 0;
+      });
+
+      currentSchedule.forEach(m => {
+        totalPlays[m.t1.id]++;
+        totalPlays[m.t2.id]++;
+        if (m.completed) {
+          donePlays[m.t1.id]++;
+          donePlays[m.t2.id]++;
+        }
+      });
+
+      const statsBody = document.getElementById('statsTableBody');
+      statsBody.innerHTML = '';
+
+      currentTeamsList.forEach(team => {
+        const totalP = totalPlays[team.id];
+        const doneP = donePlays[team.id];
+        const remainP = totalP - doneP;
+
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50/80 transition-colors';
+        tr.className = 'hover:bg-slate-50 transition-colors';
         tr.innerHTML = `
-          <td class="py-3 px-4 font-semibold text-slate-800">${escapeHtml(team.label)}</td>
-          <td class="py-3 px-4 text-slate-600">${escapeHtml(team.p1)} & ${escapeHtml(team.p2)}</td>
-          <td class="py-3 px-4 text-center font-bold text-emerald-600 text-base">${count} 場</td>
-          <td class="py-3 px-4 text-center">
-            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-              ✓ 次數均等
+          <td class="py-2.5 px-3 sm:px-4 font-bold text-slate-800">${escapeHtml(team.label)}</td>
+          <td class="py-2.5 px-3 sm:px-4 text-slate-600">${escapeHtml(team.p1)} & ${escapeHtml(team.p2)}</td>
+          <td class="py-2.5 px-2 sm:px-3 text-center font-bold text-slate-800">${totalP} 場</td>
+          <td class="py-2.5 px-2 sm:px-3 text-center font-bold text-emerald-600">${doneP} 場</td>
+          <td class="py-2.5 px-2 sm:px-3 text-center font-bold ${remainP > 0 ? 'text-amber-600' : 'text-slate-400'}">${remainP} 場</td>
+          <td class="py-2.5 px-2 sm:px-3 text-center">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              ✓ 均衡分配
             </span>
           </td>
         `;
-        statsTableBody.appendChild(tr);
+        statsBody.appendChild(tr);
       });
-
-      resultsSection.classList.remove('hidden');
-      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function toggleMatchCompleted(element) {
-      element.classList.toggle('opacity-50');
-      element.classList.toggle('bg-slate-50');
-      element.classList.toggle('line-through');
+    function copyScheduleText() {
+      if (!currentSchedule || currentSchedule.length === 0) return;
+
+      let text = `🏸 【羽球雙打對戰賽程表】\n`;
+      text += `━━━━━━━━━━━━━━\n`;
+
+      currentSchedule.forEach((m, idx) => {
+        const activeIds = new Set([m.t1.id, m.t2.id]);
+        const resting = currentTeamsList.filter(t => !activeIds.has(t.id)).map(t => t.label).join('、');
+        const status = m.completed ? '✅已完賽' : '⏳待進行';
+        
+        text += `第 ${idx + 1} 場 [${status}]\n`;
+        text += `▸ ${m.t1.display} VS ${m.t2.display}\n`;
+        if (resting) {
+          text += `▸ 輪空休息：${resting}\n`;
+        }
+        text += `\n`;
+      });
+
+      text += `━━━━━━━━━━━━━━\n各組出賽次數完全均等，敬請準時出賽！`;
+
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = text;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      try {
+        document.execCommand('copy');
+        showToast('賽程文字已成功複製！可直接前往 LINE 群組貼上');
+      } catch (err) {
+        showToast('複製失敗，請手動選取');
+      }
+      document.body.removeChild(tempTextArea);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
     }
 
     function escapeHtml(str) {
@@ -449,9 +601,8 @@
       });
     }
 
-    // Initialize with 5 groups on load
     window.addEventListener('DOMContentLoaded', () => {
-      initDefaultTeams();
+      initTeams();
     });
   </script>
 </body>
